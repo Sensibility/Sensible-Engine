@@ -1,7 +1,7 @@
 set(CMAKE_LEGACY_CYGWIN_WIN32 0)
 cmake_minimum_required(VERSION 2.9)
 
-project(sq1 C CXX)
+project(main C CXX)
 
 set(CMAKE_CXX_COMPILER "g++")
 set(CMAKE_CXX_FLAGS "-Wall -g -std=c++17")
@@ -23,6 +23,6 @@ set(PACKAGE_LIBS
 FILE(GLOB HDRS *.h)
 
 include_directories(${PACKAGE_DIRS})
-add_executable(sq1 main.cpp ${HDRS})
-target_link_libraries(sq1 ${PACKAGE_LIBS} ${SOIL})
+add_executable(main main.cpp ${HDRS})
+target_link_libraries(main ${PACKAGE_LIBS} ${SOIL})
 
