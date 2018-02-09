@@ -1,0 +1,28 @@
+set(CMAKE_LEGACY_CYGWIN_WIN32 0)
+cmake_minimum_required(VERSION 2.9)
+
+project(sq1 C CXX)
+
+set(CMAKE_CXX_COMPILER "g++")
+set(CMAKE_CXX_FLAGS "-Wall -g -std=c++17")
+
+find_package(OpenGL REQUIRED)
+find_package(GLUT REQUIRED)
+find_package(GLEW REQUIRED)
+find_library(SOIL SOIL REQUIRED)
+
+set(PACKAGE_DIRS
+        ${OPENGL_INCLUDE_DIR}
+        ${GLUT_INCLUDE_DIR}
+        ${GLEW_INCLUDE_DIR})
+set(PACKAGE_LIBS
+        ${OPENGL_LIBRARY}
+        ${GLUT_LIBRARY}
+        ${GLEW_LIBRARY})
+
+FILE(GLOB HDRS *.h)
+
+include_directories(${PACKAGE_DIRS})
+add_executable(sq1 main.cpp ${HDRS})
+target_link_libraries(sq1 ${PACKAGE_LIBS} ${SOIL})
+
