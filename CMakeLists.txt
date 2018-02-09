@@ -20,9 +20,9 @@ set(PACKAGE_LIBS
         ${GLUT_LIBRARY}
         ${GLEW_LIBRARY})
 
-FILE(GLOB HDRS *.h)
+FILE(GLOB HDRS *.h include/*.h)
 
 include_directories(${PACKAGE_DIRS})
-add_executable(main main.cpp ${HDRS})
+add_executable(main main.cpp ${HDRS} src/camera.cpp src/matrix.cpp src/vector.cpp src/point.cpp src/pointbase.cpp)
 target_link_libraries(main ${PACKAGE_LIBS} ${SOIL})
 
