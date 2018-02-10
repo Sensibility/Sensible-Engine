@@ -29,7 +29,7 @@ std::vector<std::string> pressedKeys;
 
 //Initializes all the keys
 //This front loads all the work on startup, uses potentially more memory then required
-void initKeys(){
+void initKeys() {
 	//27
 	keys["ESCAPE"][0] = 0;
 	keys["ESCAPE"][1] = 0;
@@ -703,8 +703,8 @@ void initKeys(){
 	keys["TILDE"][5] = 0;
 }
 
-std::string getKeyFromASCII(int code){
-	switch(code){
+std::string getKeyFromASCII(int code) {
+	switch (code) {
 		case 27:
 			return "ESCAPE";
 		case 32:
@@ -903,42 +903,41 @@ std::string getKeyFromASCII(int code){
 	}
 }
 
-std::string handleKey(unsigned char key, int mouseX, int mouseY, bool pressed, bool special = false){
+std::string handleKey(unsigned char key, int mouseX, int mouseY, bool pressed, bool special = false) {
 	std::string val = "";
-	val = getKeyFromASCII(key);
+	val = getKeyFromASCII( key );
 	//Making sure it was a valid key
-	if(val != "ERROR"){
+	if (val != "ERROR") {
 		//the key is not already pressed (multiple events are generated when a key is held down)
-		if(keys[val][0] == 0 && pressed){
+		if (keys[val][0] == 0 && pressed) {
 			keys[val][0] = 1;
 			keys[val][1] = mouseX;
 			keys[val][2] = mouseY;
 			keys[val][3] = -1;
 			keys[val][4] = -1;
-			keys[val][5] = std::time(0);
+			keys[val][5] = static_cast<int>(std::time( 0 ));
 			//std::cout << pressedKeys.size() << std::endl;
-			pressedKeys.push_back(val);
+			pressedKeys.push_back( val );
 			//std::cout << keys[val][0] << std::endl;
 		}
-		//The key is released
-		else if(keys[val][0] == 1 && !pressed){
+			//The key is released
+		else if (keys[val][0] == 1 && !pressed) {
 			keys[val][0] = 0;
 			keys[val][3] = mouseX;
 			keys[val][4] = mouseY;
-			keys[val][5] = std::time(0) - keys[val][5];
-			unsigned int pos = std::find(pressedKeys.begin(), pressedKeys.end(), val) - pressedKeys.begin();
-			if(pos < pressedKeys.size()) pressedKeys.erase(pressedKeys.begin() + pos);
+			keys[val][5] = static_cast<int>(std::time( 0 ) - keys[val][5]);
+			unsigned int pos = static_cast<unsigned int>(std::find( pressedKeys.begin(), pressedKeys.end(), val ) -
+														 pressedKeys.begin());
+			if (pos < pressedKeys.size()) pressedKeys.erase( pressedKeys.begin() + pos );
 		}
-		//This code will fix bug above, however it would require creating a mapping between every key on the keyboard
-		//with it's alternate value, which I don't want to do right now
-		else if(keys[val][0] == 0 && !pressed && glutGetModifiers() == GLUT_ACTIVE_SHIFT){
-			#ifdef DEBUG
+			//This code will fix bug above, however it would require creating a mapping between every key on the keyboard
+			//with it's alternate value, which I don't want to do right now
+		else if (keys[val][0] == 0 && !pressed && glutGetModifiers() == GLUT_ACTIVE_SHIFT) {
+#ifdef DEBUG
 			std::cout << "Shift is causing problems again" << std::endl;
-			#endif
-		}
-		else return "No Action";
-	}
-	else return "No Action";
+#endif
+		} else return "No Action";
+	} else return "No Action";
 	return val;
 }
 

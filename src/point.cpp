@@ -135,6 +135,7 @@ void gluLookAt( Point eye, Point lookAt, Vector upVector ) {
                upVector.getX(), upVector.getY(), upVector.getZ() );
 }
 
+
 vector<float> Point::toVector(){
     vector<float> ret;
     ret.push_back(x);
