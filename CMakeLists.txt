@@ -4,7 +4,7 @@ cmake_minimum_required(VERSION 2.9)
 project(main C CXX)
 
 set(CMAKE_CXX_COMPILER "g++")
-set(CMAKE_CXX_FLAGS "-Wall -g -std=c++17")
+set(CMAKE_CXX_FLAGS "-Wall -g -std=c++17 -pthread")
 
 find_package(OpenGL REQUIRED)
 find_package(GLUT REQUIRED)
@@ -23,6 +23,6 @@ set(PACKAGE_LIBS
 FILE(GLOB HDRS *.h include/*.h)
 
 include_directories(${PACKAGE_DIRS})
-add_executable(main main.cpp ${HDRS} src/camera.cpp src/matrix.cpp src/vector.cpp src/point.cpp src/pointbase.cpp)
+add_executable(main main.cpp ${HDRS} src/camera.cpp src/matrix.cpp src/vector.cpp src/point.cpp src/pointbase.cpp src/console.cpp include/console.h)
 target_link_libraries(main ${PACKAGE_LIBS} ${SOIL})
 

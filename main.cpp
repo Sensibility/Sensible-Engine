@@ -1,19 +1,15 @@
 #include <GL/glew.h>
 #include <GL/glut.h>
-#include <GL/gl.h>
-#include <GL/glu.h>
 
 
 #include <stdio.h>
-#include <stdlib.h>
 #include <math.h>
 #include <string>
 #include <memory>
 #include <iostream>
-#include "drawing.h"
 #include "keys.h"
 #include "include/camera.h"
-#include <time.h>
+#include "include/console.h"
 
 int windowWidth = 1150, windowHeight = 650;
 int windowId;
@@ -22,12 +18,10 @@ Camera cam;
 GLuint displayList;
 
 int leftMouseButton;
-
 bool init;
-
 int y;
-
 int x;
+Console console;
 
 void timerFunc(int value) {
 	glutPostRedisplay();
@@ -53,16 +47,16 @@ void drawGrid() {
 	glDisable( GL_LIGHTING );
 
 	glPushMatrix();
-	glBegin( GL_LINES );
-	for (int i = -50; i <= 50; ++i) {
-		glVertex3f( i, 0, -50 );
-		glVertex3f( i, 0, 50 );
+	{
+		glBegin( GL_LINES );
+		for (int i = -50; i <= 50; ++i) {
+			glVertex3f( i, 0, -50 );
+			glVertex3f( i, 0, 50 );
+			glVertex3f( -50, 0, i );
+			glVertex3f( 50, 0, i );
+		}
+		glEnd();
 	}
-	for (int i = -50; i <= 50; ++i) {
-		glVertex3f( -50, 0, i );
-		glVertex3f( 50, 0, i );
-	}
-	glEnd();
 	glPopMatrix();
 
 	glEnable( GL_LIGHTING );
@@ -82,14 +76,14 @@ void renderScene() {
 
 	glPushMatrix();
 	glTranslatef( cam.getDirX(), cam.getDirY() + 1, cam.getDirZ());
-	glutWireTeapot( 2 );
+	glutSolidTeapot( 2 );
 	glPopMatrix();
 
 	glPushMatrix();
 	glCallList( displayList );
 	glPopMatrix();
 
-/*	glFlush();*/
+	glFlush();
 
 	glutSwapBuffers();
 }
@@ -97,18 +91,24 @@ void renderScene() {
 void keyPressCall(unsigned char key, int mouseX, int mouseY) {
 	std::string val = handleKey( key, mouseX, mouseY, true );
 	if (val == "No Action") return;
-	else if (val == "w") {
-		cam.incrementDirXYZ( 1, 0, 0 );
-	} else if (val == "s") {
-		cam.incrementDirXYZ( -1, 0, 0 );
-	} else if (val == "a") {
-		cam.incrementDirXYZ( 0, 0, 1 );
-	} else if (val == "d") {
-		cam.incrementDirXYZ( 0, 0, -1 );
-	}
 
-	if (val == "ESCAPE") exit( 0 );
+	Vector vec( 0, 0, 0 );
+	if (val == "w")
+		vec.setX( 1 );
+	else if (val == "s")
+		vec.setX( -1 );
+	else if (val == "a")
+		vec.setZ( 1 );
+	else if (val == "d")
+		vec.setZ( -1 );
+	else if (val == "r")
+		vec.setY( 1 );
+	else if (val == "f")
+		vec.setY( -1 );
+	else if (val == "ESCAPE" || val == "Q")
+		exit( 0 );
 
+	cam.incrementDirXYZ( vec );
 }
 
 void keyReleaseCall(unsigned char key, int mouseX, int mouseY) {
@@ -117,8 +117,11 @@ void keyReleaseCall(unsigned char key, int mouseX, int mouseY) {
 }
 
 void mousePressCall(int button, int state, int mouseX, int mouseY) {
-	if (button == GLUT_LEFT_BUTTON)
+	if (button == GLUT_LEFT_BUTTON) {
 		leftMouseButton = state;
+		x = mouseX;
+		y = mouseY;
+	}
 	if (state == GLUT_DOWN && !init) init = true;
 }
 
@@ -132,28 +135,34 @@ void mouseMoveCall(int mouseX, int mouseY) {
 }
 
 void close() {
+	console.cancel();
 	glutDestroyWindow( windowId );
 }
 
-int main(int argc, char *argv[]) {
+void initalize() {
 	cam = Camera( 100, 100, 100,
 				  0, 0, 0,
 				  0, 1, 0,
 				  45, -45, 50,
 				  CAMERA_ARC, "" );
 
-	glutInit( &argc, argv );
 	glutInitDisplayMode( GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH );
 	glutInitWindowPosition( 50, 50 );
 	glutInitWindowSize( windowWidth, windowHeight + 50 );
 	windowId = glutCreateWindow( "main" );
 
-	//#region Diagnostics
-	GLenum glewResult = glewInit();
-	if (glewResult != GLEW_OK) {
-		printf( "[ERROR]: Could not init GLEW\n" );
-		return 0;
-	}
+	glutSetKeyRepeat( GLUT_KEY_REPEAT_ON );
+	glutKeyboardFunc( keyPressCall );
+	glutKeyboardUpFunc( keyReleaseCall );
+	glutMouseFunc( mousePressCall );
+	glutDisplayFunc( renderScene );
+	glutReshapeFunc( changeSize );
+	glutMotionFunc( mouseMoveCall );
+	glutTimerFunc((1000 / 60), timerFunc, 0 );
+}
+
+GLenum diagnostics() {
+	GLenum result = glewInit();
 
 	GLint maxVertexAttribs = 0;
 	glGetIntegerv( GL_MAX_VERTEX_ATTRIBS, &maxVertexAttribs );
@@ -176,17 +185,11 @@ int main(int argc, char *argv[]) {
 	fprintf( stdout, "[INFO]: |   Max # Lights:    %35d |\n", maxLights );
 	fprintf( stdout, "[INFO]: |   Max # Textures:  %35d |\n", maxTextures );
 	fprintf( stdout, "[INFO]: \\--------------------------------------------------------/\n\n" );
-	//#endregion
 
-	glutSetKeyRepeat( GLUT_KEY_REPEAT_ON );
-	glutKeyboardFunc( keyPressCall );
-	glutKeyboardUpFunc( keyReleaseCall );
-	glutMouseFunc( mousePressCall );
-	glutDisplayFunc( renderScene );
-	glutReshapeFunc( changeSize );
-	glutMotionFunc( mouseMoveCall );
-	glutTimerFunc((1000 / 60), timerFunc, 0 );
+	return result;
+}
 
+void initalizeScene() {
 	glEnable( GL_DEPTH_TEST );
 
 	float lightCol[4] = {1, 1, 1, 1};
@@ -210,10 +213,22 @@ int main(int argc, char *argv[]) {
 	glNewList( displayList, GL_COMPILE );
 	drawGrid();
 	glEndList();
+}
 
+int main(int argc, char *argv[]) {
+	glutInit( &argc, argv );
+	initalize();
 
-/*	atexit( close );*/
+	GLenum glewResult = diagnostics();
+	if (glewResult != GLEW_OK) {
+		printf( "[ERROR]: Could not init GLEW\n" );
+		return 0;
+	}
 
+	initalizeScene();
+	console.start();
+
+	atexit( close );
 	glutMainLoop();
 
 	return 0;
