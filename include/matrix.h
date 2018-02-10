@@ -4,45 +4,51 @@
 #include <vector>
 
 
-
 class Matrix {
 public:
 
-    Matrix();
-    Matrix( unsigned int rows, unsigned int cols );
+	Matrix();
 
-    Matrix eye();
+	Matrix(unsigned int rows, unsigned int cols);
 
-    double get( unsigned int row, unsigned int col );
-    void set( unsigned int row, unsigned int col, double val );
+	Matrix eye();
 
-    unsigned int getNumRows();
-    unsigned int getNumCols();
+	double get(unsigned int row, unsigned int col);
 
-    void makeRotation( double theta, double x, double y, double z );
-    void makeTranslation( double x, double y, double z );
+	void set(unsigned int row, unsigned int col, double val);
 
-    Matrix getSubMatrix( unsigned int rows, unsigned int cols );
+	unsigned int getNumRows();
 
-    void transpose();
+	unsigned int getNumCols();
 
-    double determinate();
+	void makeRotation(double theta, double x, double y, double z);
 
-    double* asArray();
+	void makeTranslation(double x, double y, double z);
 
-    const char* toString();
+	Matrix getSubMatrix(unsigned int rows, unsigned int cols);
+
+	void transpose();
+
+	double determinate();
+
+	double *asArray();
+
+	const char *toString();
 
 private:
-    std::vector<double> _data;
-    unsigned int _rows;
-    unsigned int _cols;
+	std::vector<double> _data;
+	unsigned int _rows;
+	unsigned int _cols;
 
-    void setupMatrix( unsigned int rows, unsigned int cols );
+	void setupMatrix(unsigned int rows, unsigned int cols);
 };
 
 Matrix operator*(float f, Matrix a);
+
 Matrix operator*(Matrix a, float f);
+
 Matrix operator*(Matrix a, Matrix b);
+
 Matrix operator+(Matrix a, Matrix b);
 
 

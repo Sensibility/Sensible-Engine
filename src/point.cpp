@@ -4,23 +4,25 @@
 #include <GL/glu.h>
 
 #include <assert.h>
-#include <math.h>
 
 
-Point::Point() { x = y = z = 0; w = 1; }
-
-Point::Point( int a, int b, int c ) {
-    x = a;
-    y = b;
-    z = c;
-    w = 1;
+Point::Point() {
+	x = y = z = 0;
+	w = 1;
 }
 
-Point::Point( double a, double b, double c ) {
-    x = a;
-    y = b;
-    z = c;
-    w = 1;
+Point::Point(int a, int b, int c) {
+	x = a;
+	y = b;
+	z = c;
+	w = 1;
+}
+
+Point::Point(double a, double b, double c) {
+	x = a;
+	y = b;
+	z = c;
+	w = 1;
 }
 
 
@@ -28,119 +30,120 @@ Point::Point( double a, double b, double c ) {
 // OPERATOR OVERLOADS
 
 Point operator*(Point a, float f) {
-    return Point(a.getX()*f,a.getY()*f,a.getZ()*f);
+	return Point( a.getX() * f, a.getY() * f, a.getZ() * f );
 }
 
 Point operator/(Point a, float f) {
-    return Point(a.getX()/f,a.getY()/f,a.getZ()/f);
+	return Point( a.getX() / f, a.getY() / f, a.getZ() / f );
 }
 
 Point operator/(float f, Point a) {
-    return Point(a.getX()/f,a.getY()/f,a.getZ()/f);
+	return Point( a.getX() / f, a.getY() / f, a.getZ() / f );
 }
 
 Point operator*(float f, Point a) {
-    return Point(a.getX()*f,a.getY()*f,a.getZ()*f);
+	return Point( a.getX() * f, a.getY() * f, a.getZ() * f );
 }
 
 Point operator+(Point a, Vector b) {
-    return Point(a.getX()+b.getX(), a.getY()+b.getY(), a.getZ()+b.getZ());
+	return Point( a.getX() + b.getX(), a.getY() + b.getY(), a.getZ() + b.getZ());
 }
 
 Vector operator-(Point a, Point b) {
-    return Vector(a.getX()-b.getX(), a.getY()-b.getY(), a.getZ()-b.getZ());
+	return Vector( a.getX() - b.getX(), a.getY() - b.getY(), a.getZ() - b.getZ());
 }
 
 Point operator*(Matrix m, Point a) {
-    assert( (m.getNumRows() == 3 || m.getNumRows() == 4) && m.getNumCols() == 4 );
-    return Point( m.get(0,0)*a.getX() + m.get(0,1)*a.getY() + m.get(0,2)*a.getZ() + m.get(0,3)*a.getW(),
-                  m.get(1,0)*a.getX() + m.get(1,1)*a.getY() + m.get(1,2)*a.getZ() + m.get(1,3)*a.getW(),
-                  m.get(2,0)*a.getX() + m.get(2,1)*a.getY() + m.get(2,2)*a.getZ() + m.get(2,3)*a.getW() );
+	assert((m.getNumRows() == 3 || m.getNumRows() == 4) && m.getNumCols() == 4 );
+	return Point(
+			m.get( 0, 0 ) * a.getX() + m.get( 0, 1 ) * a.getY() + m.get( 0, 2 ) * a.getZ() + m.get( 0, 3 ) * a.getW(),
+			m.get( 1, 0 ) * a.getX() + m.get( 1, 1 ) * a.getY() + m.get( 1, 2 ) * a.getZ() + m.get( 1, 3 ) * a.getW(),
+			m.get( 2, 0 ) * a.getX() + m.get( 2, 1 ) * a.getY() + m.get( 2, 2 ) * a.getZ() + m.get( 2, 3 ) * a.getW());
 }
 
 
-Point& Point::operator+=(Vector rhs) {
-    this->setX( this->getX() + rhs.getX() );
-    this->setY( this->getY() + rhs.getY() );
-    this->setZ( this->getZ() + rhs.getZ() );
-    return *this;
+Point &Point::operator+=(Vector rhs) {
+	this->setX( this->getX() + rhs.getX());
+	this->setY( this->getY() + rhs.getY());
+	this->setZ( this->getZ() + rhs.getZ());
+	return *this;
 }
 
 
-Point& Point::operator-=(Vector rhs) {
-    this->setX( this->getX() - rhs.getX() );
-    this->setY( this->getY() - rhs.getY() );
-    this->setZ( this->getZ() - rhs.getZ() );
-    return *this;
+Point &Point::operator-=(Vector rhs) {
+	this->setX( this->getX() - rhs.getX());
+	this->setY( this->getY() - rhs.getY());
+	this->setZ( this->getZ() - rhs.getZ());
+	return *this;
 }
 
-Point& Point::operator*=(float rhs) {
-    this->setX( this->getX() * rhs );
-    this->setY( this->getY() * rhs );
-    this->setZ( this->getZ() * rhs );
-    return *this;
+Point &Point::operator*=(float rhs) {
+	this->setX( this->getX() * rhs );
+	this->setY( this->getY() * rhs );
+	this->setZ( this->getZ() * rhs );
+	return *this;
 }
 
-Point& Point::operator/=(float rhs) {
-    this->setX( this->getX() / rhs );
-    this->setY( this->getY() / rhs );
-    this->setZ( this->getZ() / rhs );
-    return *this;
+Point &Point::operator/=(float rhs) {
+	this->setX( this->getX() / rhs );
+	this->setY( this->getY() / rhs );
+	this->setZ( this->getZ() / rhs );
+	return *this;
 }
 
 Point operator+(Point a, Point b) {
-    return Point( a.getX()+b.getX(), a.getY()+b.getY(), a.getZ()+b.getZ() );
+	return Point( a.getX() + b.getX(), a.getY() + b.getY(), a.getZ() + b.getZ());
 }
 
 bool operator==(Point a, Point b) {
-    return ( a.getX() == b.getX() && a.getY() == b.getY() && a.getZ() == b.getZ() );
+	return (a.getX() == b.getX() && a.getY() == b.getY() && a.getZ() == b.getZ());
 }
 
 bool operator!=(Point a, Point b) {
-    return !( a == b );
+	return !(a == b);
 }
 
 // MEMBER FUNCTIONS
 
 double Point::at(int i) {
-    if(i == 0)  return x;
-    if(i == 1)  return y;
-    if(i == 2)  return z;
-    return -1;
+	if (i == 0) return x;
+	if (i == 1) return y;
+	if (i == 2) return z;
+	return -1;
 }
 
 void Point::glVertex() {
-    glVertex3f(x, y, z);
+	glVertex3f( x, y, z );
 }
 
 void Point::glTexCoord() {
-    glTexCoord2f(x, y);
+	glTexCoord2f( x, y );
 }
 
 void Point::glTranslate() {
-    glTranslatef(x, y, z);
+	glTranslatef( x, y, z );
 }
 
-void glTranslatef( Point p ) {
-    p.glTranslate();
+void glTranslatef(Point p) {
+	p.glTranslate();
 }
 
-void glVertex3f( Point p ) {
-    p.glVertex();
+void glVertex3f(Point p) {
+	p.glVertex();
 }
 
-void gluLookAt( Point eye, Point lookAt, Vector upVector ) {
-    gluLookAt( eye.getX(), eye.getY(), eye.getZ(),
-               lookAt.getX(), lookAt.getY(), lookAt.getZ(),
-               upVector.getX(), upVector.getY(), upVector.getZ() );
+void gluLookAt(Point eye, Point lookAt, Vector upVector) {
+	gluLookAt( eye.getX(), eye.getY(), eye.getZ(),
+			   lookAt.getX(), lookAt.getY(), lookAt.getZ(),
+			   upVector.getX(), upVector.getY(), upVector.getZ());
 }
 
 
-vector<float> Point::toVector(){
-    vector<float> ret;
-    ret.push_back(x);
-    ret.push_back(y);
-    ret.push_back(z);
-    return ret;
+vector<float> Point::toVector() {
+	vector<float> ret;
+	ret.push_back( x );
+	ret.push_back( y );
+	ret.push_back( z );
+	return ret;
 }
 
