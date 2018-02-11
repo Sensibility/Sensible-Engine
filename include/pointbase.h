@@ -5,15 +5,15 @@
 class PointBase {
 public:
 	// GETTERS / SETTERS
-	double getX();
+	double getX()const;
 
 	void setX(double x);
 
-	double getY();
+	double getY()const;
 
 	void setY(double y);
 
-	double getZ();
+	double getZ()const;
 
 	void setZ(double z);
 

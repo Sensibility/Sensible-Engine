@@ -132,7 +132,7 @@ void glVertex3f(Point p) {
 	p.glVertex();
 }
 
-void gluLookAt(Point eye, Point lookAt, Vector upVector) {
+void gluLookAt(Point eye, Point lookAt, Point upVector) {
 	gluLookAt( eye.getX(), eye.getY(), eye.getZ(),
 			   lookAt.getX(), lookAt.getY(), lookAt.getZ(),
 			   upVector.getX(), upVector.getY(), upVector.getZ());
@@ -147,3 +147,7 @@ vector<float> Point::toVector() {
 	return ret;
 }
 
+ostream &operator<<(ostream &os, const Point &point) {
+	os << "X: " << point.getX() << ", Y: " << point.getY() << ", Z: " << point.getZ();
+	return os;
+}

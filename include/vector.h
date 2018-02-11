@@ -1,9 +1,11 @@
 #ifndef _VECTOR_H_
 #define _VECTOR_H_ 1
 
+#include <ostream>
 #include "pointbase.h"
 #include "matrix.h"
 
+using namespace std;
 
 class Vector : public PointBase {
 public:
@@ -33,6 +35,8 @@ public:
 	Vector &operator*=(float rhs);
 
 	Vector &operator/=(float rhs);
+
+	ostream &operator<<(ostream &str);
 
 	/* call glNormal3f( a, b, c ) */
 	void glNormal();

@@ -1,0 +1,49 @@
+//
+// Created by steve on 2/10/18.
+//
+
+#ifndef MAIN_CAMERA_H
+#define MAIN_CAMERA_H
+
+
+#include "arcCamera.h"
+#include "fpCamera.h"
+
+class Camera {
+
+public:
+	Camera() {
+		auto ptn = Point( 0, 0, 0 );
+		_cameras = vector<BaseCamera *>();
+		_cameras.push_back( new ArcCamera( ptn ));
+		_cameras.push_back( new FpCamera( Point( 20, 20, 20 )));
+	}
+	Camera(CameraType pType) : Camera() {
+		this->setType( pType );
+	}
+
+	BaseCamera *cam() {
+		return this->getActive();
+	}
+
+	BaseCamera *getActive() {
+		for (auto it = _cameras.begin(); it != _cameras.end(); ++it) {
+			if ((*it)->type == this->_active)
+				return *it;
+		}
+		return NULL;
+	}
+
+	void setType(CameraType pType) {
+		_active = pType;
+	}
+	CameraType getType() {
+		return this->_active;
+	}
+private:
+	std::vector<BaseCamera *> _cameras;
+	CameraType _active;
+};
+
+
+#endif //MAIN_CAMERA_H

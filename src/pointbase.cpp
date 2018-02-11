@@ -4,15 +4,15 @@
 #include <string>
 
 
-double PointBase::getX() { return x; }
+double PointBase::getX()const { return x; }
 
 void PointBase::setX(double x) { this->x = x; }
 
-double PointBase::getY() { return y; }
+double PointBase::getY()const { return y; }
 
 void PointBase::setY(double y) { this->y = y; }
 
-double PointBase::getZ() { return z; }
+double PointBase::getZ()const { return z; }
 
 void PointBase::setZ(double z) { this->z = z; }
 

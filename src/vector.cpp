@@ -48,6 +48,7 @@ Vector operator*(Matrix m, Vector a) {
 			m.get( 2, 0 ) * a.getX() + m.get( 2, 1 ) * a.getY() + m.get( 2, 2 ) * a.getZ() + m.get( 2, 3 ) * a.getW());
 }
 
+
 Vector operator+(Vector a, Vector b) {
 	return Vector( a.getX() + b.getX(), a.getY() + b.getY(), a.getZ() + b.getZ());
 }
@@ -157,6 +158,10 @@ Matrix Vector::crossProductMatrix() {
 	m.set( 1, 2, -x );
 	m.set( 2, 1, x );
 	return m;
+}
+std::ostream &Vector::operator<<(std::ostream &str) {
+	str << "X: " << getX() << ", Y: " << getY() << ", Z: " << getZ();
+	return str;
 }
 
 void glRotatef(float angle, Vector axis) {

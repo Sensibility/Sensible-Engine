@@ -8,12 +8,15 @@
 #include <memory>
 #include <iostream>
 #include "keys.h"
-#include "include/camera.h"
+#include "include/Camera/baseCamera.h"
 #include "include/console.h"
+#include "include/Camera/arcCamera.h"
+#include "include/Camera/fpCamera.h"
+#include "include/Camera/Camera.h"
 
 int windowWidth = 1150, windowHeight = 650;
 int windowId;
-Camera cam;
+Camera cameras;
 
 GLuint displayList;
 
@@ -69,15 +72,15 @@ void renderScene() {
 	glMatrixMode( GL_MODELVIEW );
 	glLoadIdentity();
 
-	cam.updateCamera( std::vector<float>());
-	gluLookAt( cam.getX(), cam.getY(), cam.getZ(),
-			   cam.getDirX(), cam.getDirY(), cam.getDirZ(),
-			   cam.getUpX(), cam.getUpY(), cam.getUpZ());
+	cameras.cam()->lookAt( std::vector<float>());
 
-	glPushMatrix();
-	glTranslatef( cam.getDirX(), cam.getDirY() + 1, cam.getDirZ());
-	glutSolidTeapot( 2 );
-	glPopMatrix();
+	if (cameras.getType() != Fp) {
+		glPushMatrix();
+		auto target = cameras.cam()->getDirXYZ();
+		glTranslatef( target.getX(), target.getY() + 1, target.getZ());
+		glutSolidTeapot( 2 );
+		glPopMatrix();
+	}
 
 	glPushMatrix();
 	glCallList( displayList );
@@ -90,25 +93,17 @@ void renderScene() {
 
 void keyPressCall(unsigned char key, int mouseX, int mouseY) {
 	std::string val = handleKey( key, mouseX, mouseY, true );
-	if (val == "No Action") return;
+	cameras.cam()->keyPressCall( val );
 
-	Vector vec( 0, 0, 0 );
-	if (val == "w")
-		vec.setX( 1 );
-	else if (val == "s")
-		vec.setX( -1 );
-	else if (val == "a")
-		vec.setZ( 1 );
-	else if (val == "d")
-		vec.setZ( -1 );
-	else if (val == "r")
-		vec.setY( 1 );
-	else if (val == "f")
-		vec.setY( -1 );
-	else if (val == "ESCAPE" || val == "Q")
+	if (val == "p") {
+		if (cameras.getType() == Fp)
+			cameras.setType( Arc );
+		else
+			cameras.setType( Fp );
+	}
+	if (val == "ESCAPE" || val == "Q")
 		exit( 0 );
 
-	cam.incrementDirXYZ( vec );
 }
 
 void keyReleaseCall(unsigned char key, int mouseX, int mouseY) {
@@ -126,8 +121,8 @@ void mousePressCall(int button, int state, int mouseX, int mouseY) {
 }
 
 void mouseMoveCall(int mouseX, int mouseY) {
-	cam.handleMouse( leftMouseButton, (glutGetModifiers() == GLUT_ACTIVE_CTRL),
-					 x, y, mouseX, mouseY );
+	cameras.cam()->handleMouse( leftMouseButton, (glutGetModifiers() == GLUT_ACTIVE_CTRL),
+								x, y, mouseX, mouseY );
 
 	x = mouseX;
 	y = mouseY;
@@ -140,11 +135,7 @@ void close() {
 }
 
 void initalize() {
-	cam = Camera( 100, 100, 100,
-				  0, 0, 0,
-				  0, 1, 0,
-				  45, -45, 50,
-				  CAMERA_ARC, "" );
+	cameras = Camera( Fp );
 
 	glutInitDisplayMode( GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH );
 	glutInitWindowPosition( 50, 50 );

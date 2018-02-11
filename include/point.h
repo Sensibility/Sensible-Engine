@@ -5,6 +5,7 @@
 #include "vector.h"
 #include "matrix.h"
 #include <vector>
+#include <ostream>
 
 using namespace std;
 
@@ -40,6 +41,7 @@ public:
 	Point &operator/=(float rhs);
 
 	vector<float> toVector();
+	friend ostream &operator<<(ostream &os, const Point &point);
 
 };
 
@@ -71,7 +73,7 @@ void glTranslatef(Point p);
 
 void glVertex3f(Point p);
 
-void gluLookAt(Point eye, Point lookAt, Vector up);
+void gluLookAt(Point eye, Point lookAt, Point up);
 
 #endif
 
