@@ -206,6 +206,10 @@ void initalizeScene() {
 	glEndList();
 }
 
+void cam() {
+	cameras.cam()->incrementXYZ( Point( 1, 1, 1 ));
+}
+
 int main(int argc, char *argv[]) {
 	glutInit( &argc, argv );
 	initalize();
@@ -218,6 +222,11 @@ int main(int argc, char *argv[]) {
 
 	initalizeScene();
 	console.start();
+	Command c = Command();
+	c.hooks = vector<string>();
+	c.hooks.push_back( "cam" );
+	c.callback = cam;
+	console.registerCommand( &c );
 
 	atexit( close );
 	glutMainLoop();

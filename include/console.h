@@ -3,10 +3,24 @@
 
 #include <pthread.h>
 #include <iostream>
+#include <functional>
+#include "vector.h"
+
+struct Command {
+	std::function<void()> callback;
+	std::vector<string> hooks;
+};
+
+class ConsoleCommand {
+public:
+	virtual std::vector<Command*> getCommands()= 0;
+};
 
 class Console {
 public:
+	Console();
 	pthread_t thread;
+	vector<Command *> commands;
 
 	void start();
 
@@ -14,16 +28,10 @@ public:
 
 	void cancel();
 
-	static void *getInput(void *) {
-		std::string ans = "";
-		while (ans != "Quit") {
-			std::cout << "Console Input: " << ans << std::endl;
-			std::cin >> ans;
-		}
-		std::cout << "Goodbye" << std::endl;
-		return NULL;
-	}
+	static void *getInput(void *);
 
+	void registerCommand(Command *pCommand);
+	void checkCommand(string ans);
 };
 
 

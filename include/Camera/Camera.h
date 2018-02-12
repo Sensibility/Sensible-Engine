@@ -8,14 +8,14 @@
 
 #include "arcCamera.h"
 #include "fpCamera.h"
+#include "../console.h"
 
-class Camera {
+class Camera : ConsoleCommand {
 
 public:
 	Camera() {
-		auto ptn = Point( 0, 0, 0 );
 		_cameras = vector<BaseCamera *>();
-		_cameras.push_back( new ArcCamera( ptn ));
+		_cameras.push_back( new ArcCamera( Point( 0, 0, 0 )));
 		_cameras.push_back( new FpCamera( Point( 20, 20, 20 )));
 	}
 	Camera(CameraType pType) : Camera() {
@@ -40,6 +40,16 @@ public:
 	CameraType getType() {
 		return this->_active;
 	}
+
+	std::vector<Command *> getCommands() {
+		auto cmds = vector<Command *>();
+
+		string prefix = "cam.";
+
+
+
+		return cmds;
+	};
 private:
 	std::vector<BaseCamera *> _cameras;
 	CameraType _active;
