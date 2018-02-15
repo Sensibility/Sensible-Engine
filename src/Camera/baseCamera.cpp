@@ -104,5 +104,4 @@ BaseCamera::BaseCamera() {
 
 void BaseCamera::lookAt(vector<float> vector) {
 	this->updateCamera( vector );
-	gluLookAt( this->getXYZ(), this->getDirXYZ(), this->getUpXYZ());
 }

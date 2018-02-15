@@ -13,7 +13,7 @@ struct Command {
 
 class ConsoleCommand {
 public:
-	virtual std::vector<Command*> getCommands()= 0;
+	virtual std::vector<Command *> getCommands()= 0;
 };
 
 class Console {

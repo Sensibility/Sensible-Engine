@@ -47,7 +47,6 @@ public:
 		string prefix = "cam.";
 
 
-
 		return cmds;
 	};
 private:
