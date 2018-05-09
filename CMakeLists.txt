@@ -11,7 +11,6 @@ find_package(OpenGL REQUIRED)
 find_package(GLUT REQUIRED)
 find_package(GLEW REQUIRED)
 find_package(SDL2 REQUIRED)
-find_library(SOIL SOIL REQUIRED)
 find_library(SDL2_LIBRARY REQUIRED)
 
 
@@ -26,7 +25,6 @@ set(PACKAGE_LIBS
         ${GLUT_LIBRARY}
         ${GLEW_LIBRARY}
         ${SDL2_LIBRARIES}
-        ${SOIL}
         )
 
 FILE(GLOB HDRS *.h include/*.h include/Camera/*.h include/Windows/*.h)

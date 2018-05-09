@@ -9,6 +9,9 @@
 #include "../Camera/baseCamera.h"
 #include "../Camera/Camera.h"
 #include <SDL2/SDL.h>
+void fn() {
+	printf("Hello\n");
+}
 
 class RenderWindow {
 public:
@@ -66,11 +69,12 @@ public:
 		glPushMatrix();
 		{
 			glBegin( GL_LINES );
-			for (int i = -50; i <= 50; ++i) {
-				glVertex3f( i, 0, -50 );
-				glVertex3f( i, 0, 50 );
-				glVertex3f( -50, 0, i );
-				glVertex3f( 50, 0, i );
+			int size = 100;
+			for (int i = -size; i <= size; i+=5) {
+				glVertex3f( i, 0, -size );
+				glVertex3f( i, 0, size );
+				glVertex3f( -size, 0, i );
+				glVertex3f( size, 0, i );
 			}
 			glEnd();
 		}
@@ -92,8 +96,9 @@ public:
 		auto xyz = cam->getXYZ();
 		auto dir = cam->getDirXYZ();
 		auto up = cam->getUpXYZ();
-		gluLookAt( xyz.getX(), xyz.getY(), xyz.getZ(), dir.getX(), dir.getY(), dir.getZ(), up.getX(), up.getY(),
-				   up.getZ());
+		gluLookAt( xyz.getX(), xyz.getY(), xyz.getZ(),
+				   dir.getX(), dir.getY(), dir.getZ(),
+				   up.getX(), up.getY(), up.getZ());
 
 		glPushMatrix();
 		glCallList( displayList );
@@ -214,6 +219,11 @@ public:
 		c.hooks.push_back( "cam" );
 		c.callback = cam;
 		console.registerCommand( &c );*/
+		Command c = Command();
+		c.hooks.push_back( "cam" );
+		c.callback = fn;
+		console.registerCommand(&c);
+
 		console.start();
 
 		//vsync
