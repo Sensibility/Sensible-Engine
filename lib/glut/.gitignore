@@ -1,0 +1,4 @@
+lib/*.lib
+include/*.h
+include/*.def
+bin/*

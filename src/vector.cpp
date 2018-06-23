@@ -3,7 +3,11 @@
 #include <assert.h>
 #include <math.h>
 
+#ifdef _WIN32
+	#include<windows.h>
+#endif
 #include <GL/gl.h>
+
 
 
 Vector::Vector() { x = y = z = w = 0; }

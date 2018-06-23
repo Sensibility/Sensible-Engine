@@ -1,0 +1,3 @@
+lib/*.lib
+include/GL/*.h
+bin/*

@@ -1,0 +1,3 @@
+lib/x64/*
+lib/x86/*
+include/SDL2/*

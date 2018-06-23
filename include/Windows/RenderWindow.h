@@ -5,18 +5,21 @@
 #ifndef MAIN_RENDERWINDOW_H
 #define MAIN_RENDERWINDOW_H
 
-#include <GL/glut.h>
+#ifdef _WIN32
+	#include<windows.h>
+#endif
+
+#include <GL/glew.h>
+#include <GL/gl.h>
+#include <GL/glu.h>
 #include "../Camera/baseCamera.h"
 #include "../Camera/Camera.h"
 #include <SDL2/SDL.h>
-void fn() {
-	printf("Hello\n");
-}
 
 class RenderWindow {
 public:
 	RenderWindow() {
-		cameras = Camera( Arc );
+		cameras = Camera( CameraType::Arc );
 		cameras.cam()->setRadius( 50 );
 	}
 	~RenderWindow() {
@@ -166,15 +169,15 @@ public:
 							vec.setY( -1 );
 							break;
 						case SDLK_p:
-							if (cameras.getType() == Fp)
-								cameras.setType( Arc );
+							if (cameras.getType() == CameraType::Fp)
+								cameras.setType( CameraType::Arc );
 							else
-								cameras.setType( Fp );
+								cameras.setType(CameraType::Fp );
 						default:
 							cout << event.key.keysym.sym << endl;
 							break;
 					}
-					if (cameras.getType() == Arc)
+					if (cameras.getType() == CameraType::Arc)
 						cameras.cam()->incrementDirXYZ( vec );
 					else
 						cameras.cam()->incrementXYZ( vec );
@@ -215,17 +218,6 @@ public:
 		context = SDL_GL_CreateContext( window );
 		SdlErrorCheck( __LINE__, true );
 
-/*		Command c = Command();
-		c.hooks.push_back( "cam" );
-		c.callback = cam;
-		console.registerCommand( &c );*/
-		Command c = Command();
-		c.hooks.push_back( "cam" );
-		c.callback = fn;
-		console.registerCommand(&c);
-
-		console.start();
-
 		//vsync
 		if (SDL_GL_SetSwapInterval( 1 ) < 0)
 			SdlErrorCheck( __LINE__, true );
@@ -263,9 +255,8 @@ private:
 	SDL_Window *window;
 	SDL_GLContext context;
 	Camera cameras;
-	Console console;
 	GLuint displayList;
-	bool down;
+	bool down = false;
 	Sint32 x;
 	Sint32 y;
 };

@@ -11,11 +11,15 @@ void ArcCamera::handleMouse(int leftMouseButton, bool ctrlClick, int x, int y, i
 	} else {
 
 		this->incrementTheta( 0.005 * (x - mouseX));
+		if (this->getTheta() <= -3.14 * 2)
+			this->setTheta(fmod(this->getTheta(), -3.14 * 2));
+		if (this->getTheta() >= 3.14 * 2)
+			this->setTheta(fmod(this->getTheta(), 3.14 * 2));
 		this->incrementPhi( 0.005 * (mouseY - y));
 		if (this->getPhi() <= 0)
 			this->setPhi( 0.05 );
-		if (this->getPhi() >= M_PI)
-			this->setPhi( M_PI - 0.05 );
+		if (this->getPhi() >= 3.14)
+			this->setPhi( 3.14 - 0.05 );
 	}
 }
 
@@ -28,9 +32,9 @@ void ArcCamera::updateCamera(std::vector<float> focus) {
 	this->setXYZ( Point( cameraX, cameraY, cameraZ ));
 }
 ArcCamera::ArcCamera() : BaseCamera() {
-	this->type = Arc;
-	this->setTheta( -M_PI / 3.f );
-	this->setPhi( M_PI / 1.8f );
+	this->type = CameraType::Arc;
+	this->setTheta( -3.14 / 3.f );
+	this->setPhi( 3.14 / 1.8f );
 	this->setRadius( 50 );
 }
 

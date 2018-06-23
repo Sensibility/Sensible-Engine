@@ -8,9 +8,8 @@
 
 #include "arcCamera.h"
 #include "fpCamera.h"
-#include "../console.h"
 
-class Camera : ConsoleCommand {
+class Camera {
 
 public:
 	Camera() {
@@ -40,15 +39,6 @@ public:
 	CameraType getType() {
 		return this->_active;
 	}
-
-	std::vector<Command *> getCommands() {
-		auto cmds = vector<Command *>();
-
-		string prefix = "cam.";
-
-
-		return cmds;
-	};
 private:
 	std::vector<BaseCamera *> _cameras;
 	CameraType _active;

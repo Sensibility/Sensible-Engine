@@ -5,7 +5,7 @@
 #include "../../include/Camera/fpCamera.h"
 
 FpCamera::FpCamera() : BaseCamera() {
-	this->type = Fp;
+	this->type = CameraType::Fp;
 	this->setTheta( 0 );
 	this->setPhi( 0 );
 	this->setRadius( 1 );
@@ -17,12 +17,12 @@ FpCamera::FpCamera(Point pTarget) : FpCamera() {
 void FpCamera::handleMouse(int leftMouseButton, bool ctrlClick, int x, int y, int mouseX, int mouseY) {
 	BaseCamera::handleMouse( leftMouseButton, ctrlClick, x, y, mouseX, mouseY );
 
-	this->incrementTheta( 0.005 * (x - mouseX));
-	this->incrementPhi( 0.005 * (mouseY - y));
+	this->incrementTheta( 0.005f * (x - mouseX));
+	this->incrementPhi( 0.005f * (mouseY - y));
 	if (this->getPhi() <= 0)
 		this->setPhi( 0.05 );
-	if (this->getPhi() >= M_PI)
-		this->setPhi( M_PI - 0.05 );
+	if (this->getPhi() >= 3.14)
+		this->setPhi( 3.14 - 0.05 );
 }
 void FpCamera::updateCamera(std::vector<float> focus) {
 	BaseCamera::updateCamera( focus );

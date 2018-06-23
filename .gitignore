@@ -34,10 +34,11 @@
 main
 .idea/*
 cmake-build-debug/*
-*.cmake
 CMakeCache.txt
 CMakeFiles/*
 Makefile
 *.cbp
 *.sln
 *.proj
+.vs/*
+cmake_install.cmake

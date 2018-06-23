@@ -9,7 +9,7 @@
 #include "../vector.h"
 #include "../point.h"
 
-enum CameraType {
+enum class CameraType {
 	Arc = 0, Fp = 1
 };
 
