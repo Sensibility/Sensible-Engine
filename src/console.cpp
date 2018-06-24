@@ -7,18 +7,8 @@
 
 
 Console::Console() {
-    this->mutex_ = SDL_CreateMutex();
-    if(!this->mutex_)
-        throw std::runtime_error("SDL_CreateMutex == NULL");
-
-
     commands_ = std::map<std::string, command>();
 }
-Console::~Console() {
-	if(mutex_)
-		SDL_DestroyMutex(mutex_);
-}
-
 std::vector<std::string> Console::Split(char* pInput, char pDelim) {
     auto result = std::vector<std::string>();
     std::stringstream ss(pInput);
@@ -30,11 +20,6 @@ std::vector<std::string> Console::Split(char* pInput, char pDelim) {
 }
 
 void Console::Activate() {
-/*
-    if(!Lock())
-        return;
-*/
-
 	char ans[100];
 	printf("> ");
 	fgets(ans, 100, stdin);
@@ -47,10 +32,6 @@ void Console::Activate() {
 	}
 
 	printf("done\n");
-
-/*
-    UnLock();
-*/
 }
 
 void Console::Register(std::string pCommand, command pCallback){
@@ -58,14 +39,4 @@ void Console::Register(std::string pCommand, command pCallback){
         commands_.insert(std::pair<std::string, command>(pCommand, pCallback));
     else
         fprintf(stderr, "Command %s already registerd.\n", pCommand.c_str());
-}
-
-bool Console::Lock() {
-	if (this->mutex_)
-		return SDL_TryLockMutex(this->mutex_) == 0;
-	return false;
-}
-
-void Console::UnLock() {
-    SDL_mutexV(this->mutex_);
 }

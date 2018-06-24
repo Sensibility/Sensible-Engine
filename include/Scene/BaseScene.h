@@ -11,6 +11,7 @@ public:
         cameras_ = Camera( CameraType::Arc );
         cameras_.cam()->setRadius( 50 );
     }
+	virtual ~BaseScene() {}
 	virtual void SetUp() = 0;
 
     virtual void Render() {
@@ -95,7 +96,7 @@ protected:
     Sint32 x, y;
 };
 
-int EventHandler(void* pData, SDL_Event* e)
+inline int EventHandler(void* pData, SDL_Event* e)
 {
 	auto data = static_cast<BaseScene*>(pData);
 	return data->InputQueue(e);

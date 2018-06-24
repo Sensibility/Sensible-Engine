@@ -11,11 +11,11 @@
 #include <SDL2/SDL.h>
 
 #include "BaseScene.h"
-#include <iostream>
 
 class Bench : public BaseScene
 {
-    void SetUp() {
+    void SetUp() override
+    {
         glClearColor( 0, 0, 0, 0 );
         glViewport( 0, 0, 1150, 650 );
         GLErrorCheck( __LINE__ );
@@ -74,7 +74,8 @@ class Bench : public BaseScene
         GLErrorCheck( __LINE__ );
     }
 
-    void Render() {
+    void Render() override
+    {
         glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
         glMatrixMode( GL_MODELVIEW );
@@ -91,12 +92,13 @@ class Bench : public BaseScene
         SdlErrorCheck( __LINE__, true );
     }
 
-    void RegisterEventLoop() {
+    void RegisterEventLoop() override
+    {
         SDL_AddEventWatch(EventHandler, this);
     }
 
-	int InputQueue(SDL_Event* e)
-    {
+	int InputQueue(SDL_Event* e) override
+	{
 		HandleKey(e);
 		return 0;
     }; 

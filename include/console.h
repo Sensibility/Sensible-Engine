@@ -15,16 +15,11 @@ class Console
 public:
 
 	Console();
-	~Console();
 
 	void Activate();
 	void Register(std::string, command);
 private:
-    void HandleAns(std::string);
-    bool Lock();
-	void UnLock();
 	std::vector<std::string> Split(char*, char);
-	SDL_mutex* mutex_;
 
 	std::map<std::string, command> commands_;
 };

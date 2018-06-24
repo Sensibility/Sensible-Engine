@@ -30,7 +30,7 @@ public:
 			if ((*it)->type == this->_active)
 				return *it;
 		}
-		return NULL;
+		return nullptr;
 	}
 
 	void setType(CameraType pType) {
