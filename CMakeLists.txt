@@ -37,7 +37,7 @@ set(PACKAGE_LIBS
 
 include_directories(${PACKAGE_DIRS})
 add_executable(main main.cpp 
-        src/pointbase.cpp src/point.cpp src/vector.cpp src/matrix.cpp src/Camera/arcCamera.cpp src/Camera/fpCamera.cpp src/Camera/Camera.cpp src/Camera/baseCamera.cpp src/console.cpp)
+        src/pointbase.cpp src/point.cpp src/vector.cpp src/matrix.cpp src/Camera/arcCamera.cpp src/Camera/fpCamera.cpp src/Camera/Camera.cpp src/Camera/baseCamera.cpp)
 target_link_libraries(main ${PACKAGE_LIBS})
 
 IF(WIN32)

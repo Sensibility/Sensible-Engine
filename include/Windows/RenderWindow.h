@@ -13,6 +13,7 @@
 #include <GL/gl.h>
 #include <GL/glu.h>
 #include <SDL2/SDL.h>
+#include <iostream>
 #include "../console.h"
 #include "../Scene/BaseScene.h"
 
@@ -26,8 +27,6 @@ int t(std::vector<std::string>& pTokens) {
 
 class RenderWindow {
 public:
-	RenderWindow() {
-	}
 	~RenderWindow() {
 		SDL_GL_DeleteContext( context );
 		SDL_DestroyWindow( window );
@@ -68,7 +67,7 @@ public:
 							case SDLK_q:
 								return;
 							case SDLK_o:
-								console_.Activate();
+								Console::Activate();
 								break;
 						}
 						break;
@@ -113,8 +112,7 @@ public:
 		if (SDL_GL_SetSwapInterval( 1 ) < 0)
 			SdlErrorCheck( __LINE__, true );
 
-		console_ = Console();
-		console_.Register("lol", &t);
+		Console::Register("lol", &t);
 
 		active_->SetUp();
 		active_->RegisterEventLoop();
@@ -149,7 +147,6 @@ private:
 	}
 	SDL_Window *window;
 	SDL_GLContext context;
-	Console console_;
 	BaseScene* active_;
 };
 

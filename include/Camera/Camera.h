@@ -8,12 +8,13 @@
 
 #include "arcCamera.h"
 #include "fpCamera.h"
+#include <vector>
 
 class Camera {
 
 public:
 	Camera() {
-		_cameras = vector<BaseCamera *>();
+		_cameras = std::vector<BaseCamera *>();
 		_cameras.push_back( new ArcCamera( Point( 0, 0, 0 )));
 		_cameras.push_back( new FpCamera( Point( 20, 20, 20 )));
 	}
