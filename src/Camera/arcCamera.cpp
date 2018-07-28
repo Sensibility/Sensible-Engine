@@ -2,7 +2,7 @@
 // Created by steve on 2/10/18.
 //
 
-#include "../../include/Camera/arcCamera.h"
+#include "../../include/Camera/ArcCamera.h"
 
 void ArcCamera::handleMouse(int leftMouseButton, bool ctrlClick, int x, int y, int mouseX, int mouseY) {
 	if (ctrlClick) {

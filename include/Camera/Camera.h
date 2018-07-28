@@ -6,7 +6,7 @@
 #define MAIN_CAMERA_H
 
 
-#include "arcCamera.h"
+#include "ArcCamera.h"
 #include <vector>
 #include "TankCamera.h"
 #include "FreeCamera.h"

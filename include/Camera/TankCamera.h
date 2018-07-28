@@ -6,7 +6,7 @@
 #define _MAIN_FPCAMERA_H
 
 
-#include "baseCamera.h"
+#include "BaseCamera.h"
 
 class TankCamera : public BaseCamera {
 public:

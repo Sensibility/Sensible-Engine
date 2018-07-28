@@ -1,5 +1,5 @@
 
-#include "../../include/Camera/baseCamera.h"
+#include "../../include/Camera/BaseCamera.h"
 
 BaseCamera::BaseCamera() {
 	this->setUpXYZ( Point( 0, 1, 0 ));

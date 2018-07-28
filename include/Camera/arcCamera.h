@@ -6,7 +6,7 @@
 #define MAIN_ARCCAMERA_H
 
 
-#include "baseCamera.h"
+#include "BaseCamera.h"
 
 class ArcCamera : public BaseCamera {
 public:

@@ -15,7 +15,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <iostream>
-#include "../console.h"
+#include "../Console.h"
 #include "../Scene/BaseScene.h"
 #include "../Renderer/Fonts.h"
 
