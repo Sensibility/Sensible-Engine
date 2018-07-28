@@ -1,8 +1,8 @@
 #ifndef _POINT_H_
 #define _POINT_H_ 1
 
-#include "pointbase.h"
-#include "vector.h"
+#include "PointBase.h"
+#include "Vector.h"
 #include "matrix.h"
 #include <vector>
 #include <ostream>
@@ -68,6 +68,8 @@ Point operator*(Matrix m, Point a);
 bool operator==(Point a, Point b);
 
 bool operator!=(Point a, Point b);
+
+Point operator*(Point a, Point b);
 
 void glTranslatef(Point p);
 

@@ -14,3 +14,17 @@ BaseCamera::BaseCamera() {
 void BaseCamera::lookAt(vector<float> vector) {
 	this->updateCamera( vector );
 }
+void BaseCamera::handleKeyPress(int val) {
+	if(val == SDLK_w)
+		keyPressCall("w");
+	if(val == SDLK_s)
+		keyPressCall("s");
+	if(val == SDLK_a)
+		keyPressCall("a");
+	if(val == SDLK_d)
+		keyPressCall("d");
+	if(val == SDLK_r)
+		keyPressCall("r");
+	if(val == SDLK_f)
+		keyPressCall("f");
+}

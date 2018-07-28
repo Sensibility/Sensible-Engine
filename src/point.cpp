@@ -49,6 +49,11 @@ Point operator*(float f, Point a) {
 	return Point( a.getX() * f, a.getY() * f, a.getZ() * f );
 }
 
+Point operator*(Point a, Point b)
+{
+	return Point(a.getX() * b.getX(), a.getY() * b.getY(), a.getZ() * b.getZ());
+}
+
 Point operator+(Point a, Vector b) {
 	return Point( a.getX() + b.getX(), a.getY() + b.getY(), a.getZ() + b.getZ());
 }

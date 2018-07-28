@@ -18,6 +18,11 @@ public:
 
 	virtual void lookAt(vector<float> vector1);
 	virtual void keyPressCall(std::string val);
+
+	virtual Point getLookDirection() override
+	{
+		return Point();
+	};
 };
 
 

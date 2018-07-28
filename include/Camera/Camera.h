@@ -7,8 +7,9 @@
 
 
 #include "arcCamera.h"
-#include "fpCamera.h"
 #include <vector>
+#include "TankCamera.h"
+#include "FreeCamera.h"
 
 class Camera {
 
@@ -16,7 +17,8 @@ public:
 	Camera() {
 		_cameras = std::vector<BaseCamera *>();
 		_cameras.push_back( new ArcCamera( Point( 0, 0, 0 )));
-		_cameras.push_back( new FpCamera( Point( 20, 20, 20 )));
+		_cameras.push_back( new TankCamera( Point( 20, 20, 20 )));
+		_cameras.push_back(new FreeCamera(Point(20, 20, 20)));
 	}
 	Camera(CameraType pType) : Camera() {
 		this->setType( pType );

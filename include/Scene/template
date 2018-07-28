@@ -1,0 +1,58 @@
+//:%s/\$HDRNAME\$//g
+//:%s/\$NAME\$//g
+#ifndef $HDRNAME$_H_
+#define $HDRNAME$_H_
+
+#include "BaseScene.h"
+
+#ifndef _WIN32
+#include <windows.h>
+#endif
+
+#include <GL/glew.h>
+#include <GL/gl.h>
+#include <GL/glu.h>
+
+class $NAME$ : public BaseScene {
+public:
+	$NAME$(): BaseScene() { }
+
+	void SetUp() override
+	{
+        glClearColor(0, 0, 0, 0);
+        glViewport(0, 0, 1150, 650);
+        GLErrorCheck(__LINE__, __FILE__);
+
+		glEnable(GL_DEPTH_TEST);
+		glShadeModel(GL_FLAT);
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		glClearStencil(0);
+		GLErrorCheck(__LINE__, __FILE__);
+
+        glMatrixMode(GL_PROJECTION);
+        glLoadIdentity();
+        gluPerspective(90, 1150 / 650, 0.1, 1024);
+        GLErrorCheck(__LINE__, __FILE__);
+
+        glMatrixMode(GL_MODELVIEW);
+        glLoadIdentity();
+        GLErrorCheck(__LINE__, __FILE__);
+		
+	}
+
+	void Render() override
+	{
+        glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+		glLoadIdentity();
+
+        glMatrixMode(GL_MODELVIEW);
+        glLoadIdentity();
+
+        BaseScene::Render();
+
+	}
+private:
+};
+
+#endif $HDRNAME$_H_

@@ -2,6 +2,7 @@
 #define _POINTBASE_H_ 1
 
 
+
 class PointBase {
 public:
 	// GETTERS / SETTERS
@@ -47,6 +48,5 @@ protected:
 	double x, y, z, w;
 };
 
-
-#endif
+#endif _POINTBASE_H_
 

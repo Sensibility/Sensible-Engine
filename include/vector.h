@@ -2,7 +2,7 @@
 #define _VECTOR_H_ 1
 
 #include <ostream>
-#include "pointbase.h"
+#include "PointBase.h"
 #include "matrix.h"
 
 using namespace std;

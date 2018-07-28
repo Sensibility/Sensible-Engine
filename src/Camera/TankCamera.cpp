@@ -2,19 +2,19 @@
 // Created by steve on 2/10/18.
 //
 
-#include "../../include/Camera/fpCamera.h"
+#include "../../include/Camera/TankCamera.h"
 
-FpCamera::FpCamera() : BaseCamera() {
-	this->type = CameraType::Fp;
+TankCamera::TankCamera() : BaseCamera() {
+	this->type = CameraType::Tank;
 	this->setTheta( 0 );
 	this->setPhi( 0 );
 	this->setRadius( 1 );
 }
-FpCamera::FpCamera(Point pTarget) : FpCamera() {
+TankCamera::TankCamera(Point pTarget) : TankCamera() {
 	this->setXYZ( pTarget );
 }
 
-void FpCamera::handleMouse(int leftMouseButton, bool ctrlClick, int x, int y, int mouseX, int mouseY) {
+void TankCamera::handleMouse(int leftMouseButton, bool ctrlClick, int x, int y, int mouseX, int mouseY) {
 	BaseCamera::handleMouse( leftMouseButton, ctrlClick, x, y, mouseX, mouseY );
 
 	this->incrementTheta( 0.005f * (x - mouseX));
@@ -24,20 +24,17 @@ void FpCamera::handleMouse(int leftMouseButton, bool ctrlClick, int x, int y, in
 	if (this->getPhi() >= 3.14)
 		this->setPhi( 3.14 - 0.05 );
 }
-void FpCamera::updateCamera(std::vector<float> focus) {
+void TankCamera::updateCamera(std::vector<float> focus) {
 	BaseCamera::updateCamera( focus );
-	auto xCalc = sin( this->getTheta()) * sin( this->getPhi());
-	auto yCalc = -cos( this->getPhi());
-	auto zCalc = -cos( this->getTheta()) * sin( this->getPhi());
-	auto ptn = Point( xCalc, yCalc, zCalc );
+	auto ptn = getLookDirection();
 	ptn *= this->getRadius();
 
 	this->setDirXYZ( ptn + this->getXYZ());
 }
-void FpCamera::lookAt(vector<float> vector1) {
+void TankCamera::lookAt(vector<float> vector1) {
 	BaseCamera::lookAt( vector1 );
 }
-void FpCamera::keyPressCall(std::string val) {
+void TankCamera::keyPressCall(std::string val) {
 	auto *vec = new Point( 0, 0, 0 );
 
 	if (val == "w")

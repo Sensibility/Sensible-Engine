@@ -1,4 +1,4 @@
-#include "../include/pointbase.h"
+#include "../include/PointBase.h"
 
 #include <stdlib.h>
 #include <string>

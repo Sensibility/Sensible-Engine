@@ -1,4 +1,4 @@
-#include "../include/vector.h"
+#include "../include/Vector.h"
 
 #include <assert.h>
 #include <math.h>

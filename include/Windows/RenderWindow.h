@@ -13,44 +13,27 @@
 #include <GL/gl.h>
 #include <GL/glu.h>
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
 #include <iostream>
 #include "../console.h"
 #include "../Scene/BaseScene.h"
+#include "../Renderer/Fonts.h"
 
-
-int t(std::vector<std::string>& pTokens) {
-	for(auto& tok: pTokens)
-		printf("%s, ", tok.c_str());
-	printf("\n");
-	return 0;
-}
 
 class RenderWindow {
 public:
+	RenderWindow()
+	{
+	}
 	~RenderWindow() {
+		Console::DeRegister("lol");
+		auto d = SDL_GetWindowID(window);
 		SDL_GL_DeleteContext( context );
-		SDL_DestroyWindow( window );
-
-		SDL_Quit();
+		SDL_DestroyWindow(window);
 	}
 
 	void RegisterScene(BaseScene* pScene) {
 		active_ = pScene;
-	}
-
-	void GLErrorCheck(int lineNum) const {
-		auto err = glGetError();
-		if (err != GL_NO_ERROR)
-			fprintf( stderr, "ERR: %s, %i\n", gluErrorString( err ), lineNum );
-	}
-
-	void SdlErrorCheck(int lineNum, bool clear = false) {
-		std::string sdlErr = SDL_GetError();
-		if (sdlErr != "") {
-			std::cout << "ERR: " << sdlErr << ", " << lineNum << std::endl;
-			if (clear)
-				SDL_ClearError();
-		}
 	}
 
 	void Loop() {
@@ -74,22 +57,41 @@ public:
 					}
 				}
 			}
+
 			active_->Render();
+			//auto f = Fonts::RenderToGLTexture("Test", "hello");
+
 			SDL_GL_SwapWindow( window );
+			GLErrorCheck(__LINE__, __FILE__);
+			SdlErrorCheck(__LINE__, true);
 		}
 	}
 
 	void Start() {
-		SDL_GL_SetAttribute( SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE );
+		Fonts::OpenFont("assets\\roboto\\Roboto-Black.ttf", "Test");
+		if (SDL_Init( SDL_INIT_VIDEO ) < 0) {
+			fprintf(stderr, "Failed to init SDL\n");
+		}
+
 
 		SDL_GL_SetAttribute( SDL_GL_CONTEXT_MAJOR_VERSION, 3 );
-		SDL_GL_SetAttribute( SDL_GL_CONTEXT_MINOR_VERSION, 0 );
+		SDL_GL_SetAttribute( SDL_GL_CONTEXT_MINOR_VERSION, 1 );
+		//Get rid of old defunct OpenGL code
+		SDL_GL_SetAttribute( SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE );
 		SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
+
 		SDL_GL_SetAttribute( SDL_GL_DEPTH_SIZE, 24 );
 
-		if (SDL_Init( SDL_INIT_VIDEO ) < 0) {
-			std::cout << "Failed to init SDL\n" << std::endl;
-		}
+		SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 8);
+		SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 8);
+		SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8);
+		SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, 8);
+
+		SdlErrorCheck(__LINE__);
+
+		active_->SdlSetUp();
+
+		IMG_Init(IMG_INIT_PNG);
 
 		auto windowWidth = 1150;
 		auto windowHeight = 650;
@@ -104,20 +106,24 @@ public:
 
 
 		if (!window)
-			std::cout << "Failed to create window" << std::endl;
+			fprintf(stderr, "Failed to create window\n");
 		context = SDL_GL_CreateContext( window );
 		SdlErrorCheck( __LINE__, true );
 
 		//vsync
 		if (SDL_GL_SetSwapInterval( 1 ) < 0)
 			SdlErrorCheck( __LINE__, true );
+		glewInit();
+		Diagnostics();
 
-		Console::Register("lol", &t);
+		GLErrorCheck(__LINE__, __FILE__);
+		SdlErrorCheck(__LINE__);
 
 		active_->SetUp();
 		active_->RegisterEventLoop();
 
-		Diagnostics();
+		GLErrorCheck(__LINE__, __FILE__);
+		SdlErrorCheck(__LINE__);
 
 		Loop();
 	}
@@ -132,8 +138,11 @@ private:
 		GLint maxTextures = 0;
 		glGetIntegerv( GL_MAX_TEXTURE_IMAGE_UNITS, &maxTextures );
 
+		string* diags;
+		vector<string*>* diagsGrp;
+
 		fprintf( stdout, "[INFO]: /--------------------------------------------------------\\\n" );
-		fprintf( stdout, "[INFO]: | OpenGL Information                                     |\n" );
+		fprintf( stdout, "[INFO]: | Info	%48s |\n", "");
 		fprintf( stdout, "[INFO]: |--------------------------------------------------------|\n" );
 		fprintf( stdout, "[INFO]: |   OpenGL Version:  %35s |\n", glGetString( GL_VERSION ));
 		fprintf( stdout, "[INFO]: |   OpenGL Renderer: %35s |\n", glGetString( GL_RENDERER ));
@@ -143,11 +152,23 @@ private:
 		fprintf( stdout, "[INFO]: |   Max # Vertex Attributes:  %26d |\n", maxVertexAttribs );
 		fprintf( stdout, "[INFO]: |   Max # Lights:    %35d |\n", maxLights );
 		fprintf( stdout, "[INFO]: |   Max # Textures:  %35d |\n", maxTextures );
+
+		diags = Fonts::Diagnostics();
+		fprintf( stdout, "[INFO]: |   %14s:  %35s |\n", diags[0].c_str(), diags[1].c_str());
+
+		diagsGrp = BufferDiagnostics();
+		for(auto& diag: *diagsGrp)
+		{
+			fprintf( stdout, "[INFO]: |   %14s:  %35s |\n", diag[0].c_str(), diag[1].c_str());
+		}
+
 		fprintf( stdout, "[INFO]: \\--------------------------------------------------------/\n\n" );
 	}
 	SDL_Window *window;
 	SDL_GLContext context;
 	BaseScene* active_;
+	float drawRefresh_;
+	float refresh_;
 };
 
 #endif //MAIN_RENDERWINDOW_H

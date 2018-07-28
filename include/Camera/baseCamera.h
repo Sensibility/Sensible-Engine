@@ -6,11 +6,12 @@
 #include <math.h>
 #include <iostream>
 
-#include "../vector.h"
+#include "../Vector.h"
 #include "../point.h"
+#include "SDL2/SDL.h"
 
 enum class CameraType {
-	Arc = 0, Fp = 1
+	Arc = 0, Tank = 1, Free = 2
 };
 
 class BaseCamera {
@@ -46,9 +47,10 @@ public:
 	virtual void handleMouse(int leftMouseButton, bool ctrlClick, int x, int y, int mouseX, int mouseY) { };
 
 	virtual void updateCamera(std::vector<float> focus) { };
-	virtual void handleKeyPress(std::string val) { };
-
+	virtual void handleKeyPress(int val);
 	virtual void keyPressCall(string basic_string) = 0;
+
+	virtual Point getLookDirection() = 0;
 
 	CameraType type;
 private:

@@ -14,6 +14,14 @@
 
 class Bench : public BaseScene
 {
+public:
+	Bench() : BaseScene()
+	{
+		
+	}
+
+	GLuint displayList;
+
     void SetUp() override
     {
         glClearColor( 0, 0, 0, 0 );
@@ -57,6 +65,8 @@ class Bench : public BaseScene
 
         glPushMatrix();
         {
+			glLineWidth(1);
+			glColor3f(1, 1, 1);
             glBegin( GL_LINES );
             int size = 100;
             for (int i = -size; i <= size; i+=5) {
@@ -91,17 +101,6 @@ class Bench : public BaseScene
 
         SdlErrorCheck( __LINE__, true );
     }
-
-    void RegisterEventLoop() override
-    {
-        SDL_AddEventWatch(EventHandler, this);
-    }
-
-	int InputQueue(SDL_Event* e) override
-	{
-		HandleKey(e);
-		return 0;
-    }; 
 };
 
 #endif
