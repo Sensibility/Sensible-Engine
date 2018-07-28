@@ -44,15 +44,6 @@ Vector operator*(float f, Vector a) {
 	return Vector( a.getX() * f, a.getY() * f, a.getZ() * f );
 }
 
-Vector operator*(Matrix m, Vector a) {
-	assert((m.getNumRows() == 3 || m.getNumRows() == 4) && m.getNumCols() == 4 );
-	return Vector(
-			m.get( 0, 0 ) * a.getX() + m.get( 0, 1 ) * a.getY() + m.get( 0, 2 ) * a.getZ() + m.get( 0, 3 ) * a.getW(),
-			m.get( 1, 0 ) * a.getX() + m.get( 1, 1 ) * a.getY() + m.get( 1, 2 ) * a.getZ() + m.get( 1, 3 ) * a.getW(),
-			m.get( 2, 0 ) * a.getX() + m.get( 2, 1 ) * a.getY() + m.get( 2, 2 ) * a.getZ() + m.get( 2, 3 ) * a.getW());
-}
-
-
 Vector operator+(Vector a, Vector b) {
 	return Vector( a.getX() + b.getX(), a.getY() + b.getY(), a.getZ() + b.getZ());
 }
@@ -109,19 +100,6 @@ double dot(Vector a, Vector b) {
 	return a.getX() * b.getX() + a.getY() * b.getX() + a.getZ() * b.getZ();
 }
 
-Matrix tensor(Vector a, Vector b) {
-	Matrix m;
-
-	for (unsigned int r = 0; r < 3; r++) {
-		for (unsigned int c = 0; c < 3; c++) {
-			m.set( r, c, a.get( r ) * b.get( c ));
-		}
-	}
-
-	return m;
-}
-
-
 // MEMBER FUNCTIONS
 
 double Vector::magSq() {
@@ -153,16 +131,6 @@ void Vector::glNormal() {
 	glNormal3f( x, y, z );
 };
 
-Matrix Vector::crossProductMatrix() {
-	Matrix m( 4, 4 );
-	m.set( 0, 1, -z );
-	m.set( 1, 0, z );
-	m.set( 0, 2, y );
-	m.set( 2, 0, -y );
-	m.set( 1, 2, -x );
-	m.set( 2, 1, x );
-	return m;
-}
 std::ostream &Vector::operator<<(std::ostream &str) {
 	str << "X: " << getX() << ", Y: " << getY() << ", Z: " << getZ();
 	return str;

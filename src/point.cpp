@@ -62,14 +62,6 @@ Vector operator-(Point a, Point b) {
 	return Vector( a.getX() - b.getX(), a.getY() - b.getY(), a.getZ() - b.getZ());
 }
 
-Point operator*(Matrix m, Point a) {
-	assert((m.getNumRows() == 3 || m.getNumRows() == 4) && m.getNumCols() == 4 );
-	return Point(
-			m.get( 0, 0 ) * a.getX() + m.get( 0, 1 ) * a.getY() + m.get( 0, 2 ) * a.getZ() + m.get( 0, 3 ) * a.getW(),
-			m.get( 1, 0 ) * a.getX() + m.get( 1, 1 ) * a.getY() + m.get( 1, 2 ) * a.getZ() + m.get( 1, 3 ) * a.getW(),
-			m.get( 2, 0 ) * a.getX() + m.get( 2, 1 ) * a.getY() + m.get( 2, 2 ) * a.getZ() + m.get( 2, 3 ) * a.getW());
-}
-
 
 Point &Point::operator+=(Vector rhs) {
 	this->setX( this->getX() + rhs.getX());

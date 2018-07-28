@@ -26,8 +26,6 @@ public:
 
 	double at(int i);
 
-	Matrix crossProductMatrix();
-
 	Vector &operator+=(Vector rhs);
 
 	Vector &operator-=(Vector rhs);
@@ -52,8 +50,6 @@ Vector operator/(Vector a, float f);
 
 Vector operator*(float f, Vector a);
 
-Vector operator*(Matrix m, Vector a);
-
 Vector operator+(Vector a, Vector b);
 
 Vector operator-(Vector a, Vector b);
@@ -65,8 +61,6 @@ bool operator!=(Vector a, Vector b);
 Vector cross(Vector a, Vector b);
 
 double dot(Vector a, Vector b);
-
-Matrix tensor(Vector a, Vector b);
 
 void glRotatef(float angle, Vector axis);
 

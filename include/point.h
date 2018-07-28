@@ -63,8 +63,6 @@ Point operator+(Vector a, Point b);
 
 Point operator+(Point a, Point b);
 
-Point operator*(Matrix m, Point a);
-
 bool operator==(Point a, Point b);
 
 bool operator!=(Point a, Point b);
