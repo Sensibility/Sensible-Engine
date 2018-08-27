@@ -11,15 +11,17 @@ public:
 
 	virtual T *AsArray()
 	{
-		T* arr = (T *)malloc(4 * sizeof(T));
+		T* arr = (T *)malloc(2 * sizeof(T));
 		arr[0] = x_; arr[1] = y_;
 		return arr;
 	}
 
 	T x() const { return x_; };
 	void x(T pX) { x_ = pX; };
-	T y() const { return y_; };
+	void addX(T pX) { x_ += pX; }
+	virtual T y() const { return y_; };
 	void y(T pY) { y_ = pY; };
+	void addY(T pY) { y_ += pY; }
 	virtual std::string ToString() 
 	{
 		char buf[255];
@@ -31,7 +33,7 @@ protected:
 };
 
 template <typename T>
-class Pnt3 : Pnt2<T>
+class Pnt3 : public Pnt2<T>
 {
 public:
 	Pnt3(T pX, T pY, T pZ) : Pnt2(pX, pY) { z_ = pZ; };
@@ -44,6 +46,7 @@ public:
 	}
 	T z() const { return z_; };
 	void z(T pZ) { z_ = pZ; };
+	void addZ(T pZ) { z_ += pZ; }
 	std::string ToString() override
 	{
 		char buf[255];
@@ -55,7 +58,7 @@ protected:
 };
 
 template <typename T>
-class Pnt4 : Pnt3<T>
+class Pnt4 : public Pnt3<T>
 {
 public:
 	Pnt4(T pX, T pY, T pZ, T pW) : Pnt3(pX, pY, pZ) { w_ = pW; };

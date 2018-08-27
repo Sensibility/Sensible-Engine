@@ -1,0 +1,41 @@
+//:%s/\$HDRNAME\$//g
+//:%s/\$NAME\$//g
+#ifndef $HDRNAME$_H_
+#define $HDRNAME$_H_
+
+#include "CoreWindow.h"
+
+#ifndef _WIN32
+#include <windows.h>
+#endif
+
+#include <GL/glew.h>
+#include <GL/gl.h>
+#include <GL/glu.h>
+
+class $NAME$ : public CoreWindow {
+public:
+	$NAME$() : CoreWindow() {}
+
+	void SceneSetUp() override {
+		glClearColor(0, 0, 0, 1);
+
+		CoreWindow::SceneSetUp();
+		glEnable(GL_DEPTH_TEST);
+		glDepthFunc(GL_LESS);
+		glEnable(GL_CULL_FACE);
+		GLErrorCheck(__LINE__, __FILE__);
+	}
+
+	void Render() override {
+        glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+
+		CoreWindow::Render();
+        GLErrorCheck( __LINE__, __FILE__ );
+
+        GLErrorCheck( __LINE__, __FILE__ );
+        SdlErrorCheck( __LINE__, true );
+	}
+private:
+};
+#endif $HDRNAME$_H_

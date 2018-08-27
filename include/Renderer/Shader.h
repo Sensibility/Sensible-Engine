@@ -1,7 +1,13 @@
 #ifndef _SHADER_H
 #define _SHADER_H
 
-#include "GL/glew.h"
+#ifdef _WIN32
+	#include<windows.h>
+#endif
+
+#include <GL/glew.h>
+#include <GL/gl.h>
+#include <GL/glu.h>
 #include "OpenGL.h"
 #include <cassert>
 #include "../File.h"
@@ -28,22 +34,12 @@ void GLSLGetProgramLog(GLuint pShader)
 class Shader
 {
 public:
-
-	void CreateAndCompile(GLenum pType, const char* pSrc)
+	virtual GLuint GetHandle(const char* pStr)
 	{
-		assert(pType == GL_VERTEX_SHADER || pType == GL_FRAGMENT_SHADER);
-		vShader_ = glCreateShader(pType);
-		glShaderSource(vShader_, 1, &pSrc, nullptr);
-		glCompileShader(vShader_);
-
-		GLint compiled;
-		glGetShaderiv(vShader_, GL_COMPILE_STATUS, &compiled);
-		if(!compiled)
-			GLSLGetShaderLog(vShader_);
-
+		return glGetUniformLocation(program_, pStr);
 	}
 
-	void CreateVertex(const char* pVertexShader)
+	virtual void CreateVertex(const char* pVertexShader)
 	{
 		vShader_ = glCreateShader(GL_VERTEX_SHADER);
 		glShaderSource(vShader_, 1, &pVertexShader, nullptr);
@@ -55,7 +51,7 @@ public:
 			GLSLGetShaderLog(vShader_);
 	}
 
-	void CreateFragment(const char* pFragmentShader)
+	virtual void CreateFragment(const char* pFragmentShader)
 	{
 		fShader_ = glCreateShader(GL_FRAGMENT_SHADER);
 		glShaderSource(fShader_, 1, &pFragmentShader, nullptr);
@@ -67,36 +63,39 @@ public:
 			GLSLGetShaderLog(fShader_);
 	}
 
-	void CreateProgram()
+	virtual void CreateProgram()
 	{
 		program_ = glCreateProgram();
+		SEGL::ErrorCheck(__LINE__, __FILE__);
 		if(IsShader(vShader_))
 			glAttachShader(program_, vShader_);
 		if(IsShader(fShader_))
 			glAttachShader(program_, fShader_);
+		SEGL::ErrorCheck(__LINE__, __FILE__);
 
 		glLinkProgram(program_);
+		SEGL::ErrorCheck(__LINE__, __FILE__);
 
 		GLint linked;
 		glGetProgramiv(program_, GL_LINK_STATUS, &linked);
 		if (!linked)
 			GLSLGetProgramLog(program_);
 
-		GLErrorCheck(__LINE__, __FILE__);
+		SEGL::ErrorCheck(__LINE__, __FILE__);
 	}
 
-	void Activate()
+	virtual void Activate()
 	{
 		glUseProgram(program_);
-		GLErrorCheck(__LINE__, __FILE__);
+		SEGL::ErrorCheck(__LINE__, __FILE__);
 	}
-	void Deactivate()
+	virtual void Deactivate()
 	{
 		glUseProgram(0);
-		GLErrorCheck(__LINE__, __FILE__);
+		SEGL::ErrorCheck(__LINE__, __FILE__);
 	}
 
-	bool Validate()
+	virtual bool Validate()
 	{
 		glValidateProgram(program_);
 		GLint status;
@@ -105,21 +104,38 @@ public:
 		return status;
 	}
 
+	virtual void SetDefaults()
+	{
+		//glVertexAttrib1v();
+	}
+
 	static bool IsShader(GLuint pShader) { return glIsShader(pShader); }
 	static bool IsProgram(GLuint pProgram) { return glIsProgram(pProgram); }
-private:
+protected:
 	GLuint fShader_, vShader_, program_;
 };
 
 namespace ShaderBuilder
 {
-	Shader* CreateShader(const char* pVertexFile, const char* pFragmentFile)
+	Shader* CreateShaderStr(std::string pVertex, std::string pFragment)
 	{
 		auto shader = new Shader();
-		shader->CreateVertex(File::ReadFileToStr(pVertexFile).c_str());
-		shader->CreateFragment(File::ReadFileToStr(pFragmentFile).c_str());
+		shader->CreateVertex(pVertex.c_str());
+		SEGL::ErrorCheck(__LINE__, __FILE__);
+		shader->CreateFragment(pFragment.c_str());
+		SEGL::ErrorCheck(__LINE__, __FILE__);
 		shader->CreateProgram();
+		SEGL::ErrorCheck(__LINE__, __FILE__);
 		return shader;
+	}
+	Shader* CreateShader(const char* pVertexFile, const char* pFragmentFile)
+	{
+		return CreateShaderStr(File::ReadFileToStr(pVertexFile), File::ReadFileToStr(pFragmentFile));
+	}
+
+	Shader* CreateShaderFolder(std::string pFolder)
+	{
+		return CreateShader((pFolder + ".v.glsl").c_str(), (pFolder + ".f.glsl").c_str());
 	}
 }
 #endif _SHADER_H

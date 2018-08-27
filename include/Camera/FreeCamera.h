@@ -11,16 +11,16 @@ public:
 	{
 		this->type = CameraType::Free;
 	}
-	FreeCamera(Point pTarget) : TankCamera(pTarget)
+	FreeCamera(glm::vec3 pTarget) : TankCamera(pTarget)
 	{
 		this->type = CameraType::Free;
 	}
 
 	void keyPressCall(std::string val) override
 	{
-		auto transform = Point();
-		if (val == "w") transform = Point(1, 1, 1);
-		else if (val == "s") transform = Point(-1, -1, -1);
+		auto transform = glm::vec3(0);
+		if (val == "w") transform = glm::vec3(1, 1, 1);
+		else if (val == "s") transform = glm::vec3(-1, -1, -1);
 		this->incrementXYZ(getLookDirection() * transform);
 	};
 };

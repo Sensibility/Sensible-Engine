@@ -6,6 +6,7 @@
 #include <vector>
 #include <map>
 #include "SEMap.h"
+#include "String.h"
 
 typedef int (*command)(std::vector<std::string>&, void*);
 struct Command
@@ -23,6 +24,7 @@ struct Command
 	void* context_;
 };
 
+
 SEMap<std::string, Command> commands_ = SEMap<std::string, Command>();
 class Console
 {
@@ -36,7 +38,7 @@ public:
 		if ((pos = strchr(ans, '\n')) != nullptr)
 			*pos = '\0';
 
-		auto tokens = Split(ans, ' ');
+		auto tokens = SEString::Split(ans, ' ');
 		if(!tokens.empty()) {
 			if (tokens[0] == "Print")
 				Print();
@@ -67,16 +69,6 @@ public:
 	}
 
 private:
-	static std::vector<std::string> Split(char* pInput, char pDelim)
-	{
-		auto result = std::vector<std::string>();
-		std::stringstream ss(pInput);
-		std::string item;
-		while(getline(ss, item, pDelim))
-			if(!item.empty())
-				result.push_back(item);
-		return result;
-	};
 };
 
 #endif

@@ -1,0 +1,12 @@
+project(shader-compiler)
+add_executable(shader-compiler main.cpp)
+target_link_libraries(shader-compiler ${PACKAGE_LIBS})
+
+IF(WIN32)
+	foreach( dll ${DLLS})
+		add_custom_command(TARGET shader-compiler POST_BUILD
+			COMMAND ${CMAKE_COMMAND} -E copy_if_different
+				${dll}
+				$<TARGET_FILE_DIR:shader-compiler>)
+	endforeach(dll )
+endif()

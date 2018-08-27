@@ -8,10 +8,16 @@
 #include "GL/glew.h"
 #include <GL/gl.h>
 #include <GL/glu.h>
+#include <vector>
 #include <cstdio>
 
+#define GL_GPU_MEM_DED_AVAILABLE_NVX 0x9047
+#define GL_GPU_MEM_TOTAL_AVAILABLE_NVX 0x9048
+#define GL_GPU_MEM_CURRENT_AVAILABLE_NVX 0x9049
 
-inline void GLErrorCheck(int lineNum, const char* pFile = nullptr) {
+namespace SEGL
+{
+inline void ErrorCheck(int lineNum, const char* pFile = nullptr) {
 	const auto err = glGetError();
 	if (err != GL_NO_ERROR)
 	{
@@ -25,20 +31,7 @@ inline void GenerateMipMap(GLuint pTextureHandle, GLenum pTarget)
 {
 	glBindTexture(pTarget, pTextureHandle);
 	glGenerateMipmap(pTarget);
-	GLErrorCheck(__LINE__, __FILE__);
-}
-
-inline void DrawFog()
-{
-	glEnable(GL_FOG);
-	GLfloat fogColor[4] = { 0.5, 0.5, 0.5, 1 };
-	glFogi(GL_FOG_MODE, GL_EXP);
-	glFogfv(GL_FOG_COLOR, fogColor);
-	glFogf(GL_FOG_DENSITY, 0.1);
-	glHint(GL_FOG_HINT, GL_NICEST);
-	glFogf(GL_FOG_START, 40.0);
-	glFogf(GL_FOG_END, 600.0);
-	GLErrorCheck(__LINE__);
+	ErrorCheck(__LINE__, __FILE__);
 }
 
 //Doesnt consider texture residency in high performance specialized hardware
@@ -52,27 +45,32 @@ inline bool CanCreateTexture2D(int pHeight, int pWidth, GLenum pColor)
 }
 
 //h/w must be powers of 2
-inline GLuint GenerateTexture2D(int pHeight, int pWidth, void* pPixels,
+template<class T>
+inline GLuint GenerateTexture2D(int pHeight, int pWidth, T pPixels,
 		GLenum pColor = GL_RGBA,
+		GLenum pInternalColor = GL_RGBA,
 		GLint pMinFilter = GL_LINEAR,
 		GLint pMagFilter = GL_LINEAR,
 		GLint pWrapS = GL_REPEAT,
 		GLint pWrapT = GL_REPEAT)
 {
-	glEnable(GL_TEXTURE_2D);
 	bool c = CanCreateTexture2D(pHeight, pWidth, pColor);
-	GLuint tex = 0;
+	GLuint tex;
 	glGenTextures(1, &tex);
+	SEGL::ErrorCheck(__LINE__, __FILE__);
 	glBindTexture(GL_TEXTURE_2D, tex);
+	SEGL::ErrorCheck(__LINE__, __FILE__);
 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, pMinFilter);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, pMagFilter);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, pWrapS);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, pWrapT);
-	glTexImage2D(GL_TEXTURE_2D, 0, pColor, pWidth, pHeight, 
-		0, pColor, GL_UNSIGNED_BYTE, pPixels);
+	SEGL::ErrorCheck(__LINE__, __FILE__);
+	glTexImage2D(GL_TEXTURE_2D, 0, pInternalColor, pWidth, pHeight, 
+		0, pColor, GL_UNSIGNED_BYTE, (T)pPixels);
 
-	glDisable(GL_TEXTURE_2D);
+	SEGL::ErrorCheck(__LINE__, __FILE__);
+
 	return tex;
 }
 void* SampleTexture2D(int height, int width, bool pSub)
@@ -94,98 +92,19 @@ void* SampleTexture2D(int height, int width, bool pSub)
 	return tex;
 }
 
-//3+
-bool BlendingEnabledOnBuffer(GLuint pBufferIndex)
+std::vector<std::string*>* BufferDiagnostics()
 {
-	return glIsEnabledi(GL_BLEND, pBufferIndex) == GL_TRUE;
-}
+	auto diags = new std::vector<std::string*>();
 
-void EnableBlendingOnBuffer(GLuint pBufferIndex)
-{
-	glEnablei(GL_BLEND, pBufferIndex);
-	GLErrorCheck(__LINE__, __FILE__);
-}
-
-void DisableBlendingOnBuffer(GLuint pBufferIndex)
-{
-	glDisablei(GL_BLEND, pBufferIndex);
-	GLErrorCheck(__LINE__, __FILE__);
-}
-
-//1.5+
-GLuint GenerateQueryObject() {
-	GLuint id;
-	glGenQueries(1, &id);
-
-	return id;
-}
-
-bool IsQuery(GLuint pId) { return glIsQuery(pId) == GL_TRUE; }
-
-void BeginQueryObject(GLuint pId)
-{
-	if(IsQuery(pId))
-	{
-		glBeginQuery(GL_SAMPLES_PASSED, pId);
-		GLErrorCheck(__LINE__, __FILE__);
-	}
-}
-
-void DeleteQueryObject(GLuint pId)
-{
-	if(IsQuery(pId))
-	{
-		glDeleteQueries(1, &pId);
-		GLErrorCheck(__LINE__, __FILE__);
-	}
-}
-
-GLuint CloseQueryObject(GLuint* pId)
-{
-	if(IsQuery(*pId))
-	{
-		glEndQuery(GL_SAMPLES_PASSED);
-
-		int count = 100, samples = 0;
-		GLint queryReady = false;
-		while(!queryReady && count--)
-		{
-			glGetQueryObjectiv(*pId, GL_QUERY_RESULT_AVAILABLE, &queryReady);
-		}
-
-		if(queryReady == GL_TRUE)
-		{
-			glGetQueryObjectiv(*pId, GL_QUERY_RESULT, &samples);
-		}
-		else
-		{
-			samples = 1;
-			fprintf(stderr, "Unable to get query results for %i\n", *pId);
-		}
-		glDeleteQueries(1, pId);
-		pId = nullptr;
-
-		GLErrorCheck(__LINE__, __FILE__);
-
-		return samples;
-	}
-	return 0;
-}
-
-
-
-vector<string*>* BufferDiagnostics()
-{
-	auto diags = new vector<string*>();
-
-	string* str = new string[2];
+	std::string* str = new std::string[2];
+	char buff[100];
+	/*
 	GLint r, g, b, a;
 	glGetIntegerv(GL_RED_BITS, &r);
 	glGetIntegerv(GL_BLUE_BITS, &b);
 	glGetIntegerv(GL_GREEN_BITS, &g);
 	glGetIntegerv(GL_ALPHA_BITS, &a);
 	str[0] = "R G B A";
-	char buff[100];
 	snprintf(buff, sizeof(buff), "%i %i %i %i Bits", r, g, b, a);
 	str[1] = buff;
 	diags->push_back(str);
@@ -199,44 +118,48 @@ vector<string*>* BufferDiagnostics()
 	snprintf(buff, sizeof(buff), "%i %i %i %i Bits", r, g, b, a);
 	str[1] = buff;
 	diags->push_back(str);
+	*/
 
 	GLboolean stero, doubleBuff; 
 	GLint index, depth, stencil;
 
 	glGetBooleanv(GL_STEREO, &stero);
-	str = new string[2];
+	str = new std::string[2];
 	str[0] = "Stereo Buffer?";
 	str[1] = stero ? "Y" : "N";
 	diags->push_back(str);
 
 	glGetBooleanv(GL_DOUBLEBUFFER, &doubleBuff);
-	str = new string[2];
+	str = new std::string[2];
 	str[0] = "Double Buffer?";
 	str[1] = doubleBuff ? "Y" : "N";
 	diags->push_back(str);
 
 
 	glGetIntegerv(GL_DOUBLEBUFFER, &index);
-	str = new string[2];
+	str = new std::string[2];
 	str[0] = "Index Bits";
 	snprintf(buff, sizeof(buff), "%i", index);
 	str[1] = buff;
 	diags->push_back(str);
 
 	glGetIntegerv(GL_DOUBLEBUFFER, &depth);
-	str = new string[2];
+	str = new std::string[2];
 	str[0] = "Depth Bits";
 	snprintf(buff, sizeof(buff), "%i", depth);
 	str[1] = buff;
 	diags->push_back(str);
 
+	/*
 	glGetIntegerv(GL_STENCIL_BITS, &stencil);
 	str = new string[2];
 	str[0] = "Stencil Bits";
 	snprintf(buff, sizeof(buff), "%i", stencil);
 	str[1] = buff;
 	diags->push_back(str);
+	*/
 
 	return diags;
+}
 }
 #endif OPEN_GL_H_
