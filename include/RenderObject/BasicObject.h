@@ -60,6 +60,17 @@ public:
 		SEGL::ErrorCheck(__LINE__, __FILE__);
 	}
 protected:
+	unsigned char GetDrawType()
+	{
+		switch(type_)
+		{
+		case LINES:
+			return GL_LINES;
+		default:
+		case TRIS:
+			return GL_TRIANGLES;
+		}
+	}
 	DrawType type_;
 	std::vector<glm::vec3 > vertices_;
 	virtual void BindAttributes()
@@ -71,7 +82,7 @@ protected:
 	}
 	virtual void DrawBuffers() 
 	{
-		glDrawArrays(GL_TRIANGLES, 0, vertices_.size());
+		glDrawArrays(GetDrawType(), 0, vertices_.size());
 		//glMultiDrawArrays
 	}
 	virtual void DisableAttributes() 

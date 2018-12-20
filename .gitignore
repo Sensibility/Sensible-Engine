@@ -42,3 +42,4 @@ Makefile
 *.proj
 .vs/*
 cmake_install.cmake
+lib/freetype

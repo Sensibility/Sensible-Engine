@@ -62,6 +62,42 @@ public:
 		return cfile;
 	}
 
+	static bool WriteToFile(std::string pFileName, std::string pText)
+	{
+		FILE* fp = fopen(pFileName.c_str(), "w");
+		if (fp == nullptr)
+			return false;
+
+		fprintf(fp, pText.c_str());
+
+		fclose(fp);
+		return true;
+	}
+
+	static void Dump(std::vector< std::map<std::string, double> > pStats)
+	{
+		std::string output;
+		bool first = true;
+		for(auto& datapoint: pStats)
+		{
+				for(auto& point: datapoint)
+				{
+					if(first)
+					{
+						output += point.first + ",";
+					}
+					else
+					{
+						output += std::to_string(point.second) + ",";
+					}
+				}
+				first = false;
+				output += "\n";
+		}
+		WriteToFile("assets/dump.csv", output);
+	}
+
+
 	static std::vector<std::string> ListFolder(const char* pDir)
 	{
 #ifdef _WIN32

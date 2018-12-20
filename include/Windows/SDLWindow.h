@@ -21,6 +21,7 @@
 #include "../Texture/Text/FontProvider.h"
 #include "../Shaders/ShaderProvider.h"
 #include "../RenderObject/ObjectProvider.h"
+#include "../Timer/TimerProvider.h"
 
 int EventHandle(void* pData, SDL_Event* e);
 class SDLWindow
@@ -125,7 +126,7 @@ public:
 
 	TextureProvider* texture_;
 	ShaderProvider* shaders_;
-
+	TimerProvider* timer_;
 	ObjectProvider* object_;
 
 	virtual void SDLExtSetUp()
@@ -134,6 +135,7 @@ public:
 		font_ = (FontProvider*) GetProvider<FontProvider>();
 		texture_ = (TextureProvider*)GetProvider<TextureProvider>();
 		object_ = (ObjectProvider*)GetProvider<ObjectProvider>();
+		timer_ = (TimerProvider*)GetProvider<TimerProvider>();
 	}
 
 	virtual void WindowSetUp()

@@ -7,6 +7,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
 option(DEBUG "output debug information")
 option(TESTS "run unit tests")
 
+add_definitions(-DWINDOW_SDL2)
 
 IF(WIN32)
     set(SDL2_DIR lib/sdl2)
